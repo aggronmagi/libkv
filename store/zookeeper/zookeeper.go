@@ -4,8 +4,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rpcxio/libkv"
-	"github.com/rpcxio/libkv/store"
+	"github.com/aggronmagi/libkv"
+	"github.com/aggronmagi/libkv/store"
 	zk "github.com/samuel/go-zookeeper/zk"
 )
 

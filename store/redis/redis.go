@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/rpcxio/libkv"
-	"github.com/rpcxio/libkv/store"
+	"github.com/aggronmagi/libkv"
+	"github.com/aggronmagi/libkv/store"
 )
 
 var (

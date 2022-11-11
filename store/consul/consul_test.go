@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rpcxio/libkv"
-	"github.com/rpcxio/libkv/store"
-	"github.com/rpcxio/libkv/testutils"
+	"github.com/aggronmagi/libkv"
+	"github.com/aggronmagi/libkv/store"
+	"github.com/aggronmagi/libkv/testutils"
 	"github.com/stretchr/testify/assert"
 )
 

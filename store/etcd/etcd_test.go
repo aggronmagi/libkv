@@ -1,4 +1,4 @@
-package zookeeper
+package etcd
 
 import (
 	"testing"
@@ -7,18 +7,21 @@ import (
 	"github.com/aggronmagi/libkv"
 	"github.com/aggronmagi/libkv/store"
 	"github.com/aggronmagi/libkv/testutils"
+	estore "github.com/aggronmagi/libkv/store"
 	"github.com/stretchr/testify/assert"
 )
 
 var (
-	client = "localhost:2181"
+	client = "localhost:4001"
 )
 
-func makeZkClient(t *testing.T) store.Store {
+func makeEtcdClient(t *testing.T) store.Store {
 	kv, err := New(
 		[]string{client},
 		&store.Config{
 			ConnectionTimeout: 3 * time.Second,
+			Username:          "test",
+			Password:          "very-secure",
 		},
 	)
 
@@ -29,21 +32,22 @@ func makeZkClient(t *testing.T) store.Store {
 	return kv
 }
 
-func TestRegister(t *testing.T) {
+func TestEtcdRegister(t *testing.T) {
 	Register()
 
-	kv, err := libkv.NewStore(store.ZK, []string{client}, nil)
+	kv, err := libkv.NewStore(estore.ETCD, []string{client}, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, kv)
 
-	if _, ok := kv.(*Zookeeper); !ok {
-		t.Fatal("Error registering and initializing zookeeper")
+	if _, ok := kv.(*Etcd); !ok {
+		t.Fatal("Error registering and initializing etcd")
 	}
 }
 
-func TestZkStore(t *testing.T) {
-	kv := makeZkClient(t)
-	ttlKV := makeZkClient(t)
+func TestEtcdStore(t *testing.T) {
+	kv := makeEtcdClient(t)
+	lockKV := makeEtcdClient(t)
+	ttlKV := makeEtcdClient(t)
 
 	defer testutils.RunCleanup(t, kv)
 
@@ -51,5 +55,7 @@ func TestZkStore(t *testing.T) {
 	testutils.RunTestAtomic(t, kv)
 	testutils.RunTestWatch(t, kv)
 	testutils.RunTestLock(t, kv)
+	testutils.RunTestLockTTL(t, kv, lockKV)
+	testutils.RunTestLockWait(t, kv, lockKV)
 	testutils.RunTestTTL(t, kv, ttlKV)
 }
